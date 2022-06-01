@@ -22,13 +22,11 @@ class Order with ChangeNotifier {
   }
 
   void addOrder(List<CartItem> cartItem, double amount) {
-    _orderItem.insert(
-        0,
-        OrderItem(
-            dispatchTime: DateTime.now(),
-            amount: amount,
-            id: DateTime.now().toString(),
-            item: cartItem));
+    _orderItem.add(OrderItem(
+        dispatchTime: DateTime.now(),
+        amount: amount,
+        id: DateTime.now().toString(),
+        item: cartItem));
     notifyListeners();
   }
 }

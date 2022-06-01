@@ -40,7 +40,7 @@ class ProductItem extends StatelessWidget {
                       product.description,
                       product.title,
                     );
-                    showToast(context, product.title);
+                    showToast(context, "${product.title} added to the Cart");
                   },
                   icon: const Icon(Icons.shopping_cart),
                   color: Theme.of(context).colorScheme.secondary),

@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 
-void showToast(BuildContext context, String itemName) {
+void showToast(BuildContext context, String toast,
+    {IconData icon = Icons.check_circle_rounded,
+    Color iconColor = Colors.greenAccent}) {
   final scaffold = ScaffoldMessenger.of(context);
   scaffold.showSnackBar(
     SnackBar(
         content:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const Icon(
-            Icons.check_box_rounded,
-            color: Colors.white,
+          Icon(
+            icon,
+            color: iconColor,
           ),
           Text(
-            "$itemName added to Cart",
+            toast,
             textAlign: TextAlign.center,
             style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: 12,
                 fontFamily: "Poppins"),
           )
         ]),
         backgroundColor: Colors.black54,
-        duration: const Duration(milliseconds: 250)),
+        duration: const Duration(milliseconds: 500)),
   );
 }

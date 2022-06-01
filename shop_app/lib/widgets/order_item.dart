@@ -24,9 +24,9 @@ class _OrderItemState extends State<OrderItem> {
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text('\$${widget.order.amount}'),
+            title: Text('Total Amount: Rs ${widget.order.amount}'),
             subtitle: Text(
-              DateFormat('dd/MM/yyyy').format(widget.order.dispatchTime),
+              "Order Date: ${DateFormat('dd/MM/yyyy').format(widget.order.dispatchTime)}",
             ),
             trailing: IconButton(
               icon: _expanded
@@ -42,27 +42,22 @@ class _OrderItemState extends State<OrderItem> {
           if (_expanded)
             Container(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                height: min(widget.order.item.length * 20 + 5, 180),
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                height: min(widget.order.item.length * 20 + 20, 180),
                 child: ListView(
-                  children: [
-                    ...widget.order.item
-                        .map((data) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  data.title,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                    "${data.quantity} X Price: \$${data.price}")
-                              ],
-                            )))
-                        .toList()
-                  ],
+                  children: widget.order.item
+                      .map((data) => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                data.title,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text("${data.quantity} X Price: \$${data.price}")
+                            ],
+                          ))
+                      .toList(),
                 ))
         ],
       ),

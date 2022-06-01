@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/order.dart';
+import 'package:shop_app/util/helper.dart';
 import '../providers/cart.dart' show Cart;
 import '../widgets/cart_item.dart';
 
@@ -35,8 +36,17 @@ class CartScreen extends StatelessWidget {
                         ),
                         TextButton(
                             onPressed: () {
-                              addOrder(cart.values.toList(), totalAmount);
-                              clearCart();
+                              if (cart.isEmpty || totalAmount < 0.0) {
+                                showToast(context,
+                                    "No Item on the Cart to Place Order",
+                                    icon: Icons.cancel_rounded,
+                                    iconColor: Colors.redAccent);
+                              } else {
+                                addOrder(cart.values.toList(), totalAmount);
+                                clearCart();
+                                showToast(context,
+                                    "Check Order Screen to Place the order");
+                              }
                             },
                             child: const Text(
                               "Order Now",
