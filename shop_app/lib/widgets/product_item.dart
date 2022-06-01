@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/product.dart';
 import 'package:shop_app/util/constants.dart';
+import 'package:shop_app/util/helper.dart';
 
 import '../providers/cart.dart';
 
@@ -31,13 +32,16 @@ class ProductItem extends StatelessWidget {
                         color: Theme.of(context).colorScheme.secondary,
                       )),
               trailing: IconButton(
-                  onPressed: () => cartProvider.addItem(
-                        product.id,
-                        product.price,
-                        product.image,
-                        product.description,
-                        product.title,
-                      ),
+                  onPressed: () {
+                    cartProvider.addItem(
+                      product.id,
+                      product.price,
+                      product.image,
+                      product.description,
+                      product.title,
+                    );
+                    showToast(context, product.title);
+                  },
                   icon: const Icon(Icons.shopping_cart),
                   color: Theme.of(context).colorScheme.secondary),
               backgroundColor: Colors.black54,

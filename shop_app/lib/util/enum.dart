@@ -1,0 +1,1 @@
+enum ProductOverViewAppBarEnum { favourites, all }
