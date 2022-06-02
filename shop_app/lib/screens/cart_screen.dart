@@ -36,6 +36,8 @@ class CartScreen extends StatelessWidget {
                         ),
                         TextButton(
                             onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
                               if (cart.isEmpty || totalAmount < 0.0) {
                                 showToast(context,
                                     "No Item on the Cart to Place Order",

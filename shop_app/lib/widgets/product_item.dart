@@ -40,6 +40,7 @@ class ProductItem extends StatelessWidget {
                       product.description,
                       product.title,
                     );
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     showToast(context, "${product.title} added to the Cart");
                   },
                   icon: const Icon(Icons.shopping_cart),

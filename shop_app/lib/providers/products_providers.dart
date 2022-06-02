@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/providers/product.dart';
+import 'package:shop_app/util/helper.dart';
 
 class ProductProvider with ChangeNotifier {
   final List<Product> _items = [
@@ -47,5 +48,43 @@ class ProductProvider with ChangeNotifier {
 
   Product findById(String id) {
     return _items.firstWhere((element) => element.id == id);
+  }
+
+  void addProduct(Product product, BuildContext context) {
+    final newProduct = Product(
+        image: product.image,
+        description: product.description,
+        id: DateTime.now().toString(),
+        price: product.price,
+        title: product.title);
+    _items.add(newProduct);
+    showToast(context, "Product Added");
+
+    notifyListeners();
+  }
+
+  void updateProducts(Product newProduct, BuildContext context) {
+    final indexNumber = _items.indexWhere((prod) => prod.id == newProduct.id);
+    if (indexNumber >= 0) {
+      _items[indexNumber] = newProduct;
+      showToast(context, "Product Updated");
+      notifyListeners();
+    } else {
+      showToast(context, "Product Not Found",
+          iconColor: Colors.redAccent, icon: Icons.cancel_rounded);
+    }
+  }
+
+  void deleteProduct(String id, BuildContext context) {
+    final indexNumber = _items.indexWhere((prod) => prod.id == id);
+    if (indexNumber >= 0) {
+      _items.removeAt(indexNumber);
+      showToast(context, "Product Deleted");
+      notifyListeners();
+    } else {
+      showToast(context, "Product Not Found",
+          iconColor: Colors.redAccent, icon: Icons.cancel_rounded);
+    }
+    Navigator.of(context).pop(true);
   }
 }

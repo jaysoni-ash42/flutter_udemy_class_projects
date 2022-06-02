@@ -22,6 +22,6 @@ void showToast(BuildContext context, String toast,
           )
         ]),
         backgroundColor: Colors.black54,
-        duration: const Duration(milliseconds: 500)),
+        duration: const Duration(seconds: 2)),
   );
 }
