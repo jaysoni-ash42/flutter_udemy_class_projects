@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products_providers.dart';
 import 'package:shop_app/util/constants.dart';
 
+import '../util/helper.dart';
+
 class UserProductItem extends StatelessWidget {
   final String id;
   final String title;
@@ -22,7 +24,7 @@ class UserProductItem extends StatelessWidget {
       leading: Image.network(imageUrl, fit: BoxFit.cover),
       title: Text(title),
       subtitle: Text(description),
-      trailing: Container(
+      trailing: SizedBox(
         width: 100,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -51,10 +53,24 @@ class UserProductItem extends StatelessWidget {
                                   },
                                   child: const Text("No")),
                               ElevatedButton(
-                                  onPressed: () {
-                                    Provider.of<ProductProvider>(context,
-                                            listen: false)
-                                        .deleteProduct(id, context);
+                                  onPressed: () async {
+                                    var state =
+                                        await Provider.of<ProductProvider>(
+                                                context,
+                                                listen: false)
+                                            .deleteProduct(id);
+                                    if (state) {
+                                      showToast(
+                                        context,
+                                        "Product Deleted",
+                                      );
+                                    } else {
+                                      showToast(context,
+                                          "Product Not Found Try Again",
+                                          iconColor: Colors.redAccent,
+                                          icon: Icons.cancel_rounded);
+                                    }
+                                    Navigator.of(context).pop();
                                   },
                                   child: const Text("Yes"))
                             ],

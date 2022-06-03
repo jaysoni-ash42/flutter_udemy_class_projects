@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_app/providers/products_providers.dart';
 import 'package:shop_app/util/constants.dart';
 import 'package:shop_app/util/enum.dart';
 import 'package:shop_app/widgets/badge.dart';
+import 'package:shop_app/widgets/loading_state.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/product_grid.dart';
+import '../widgets/refresh_widget.dart';
 
 class ProductOverviewScreen extends StatefulWidget {
   const ProductOverviewScreen({Key? key}) : super(key: key);
@@ -14,6 +18,29 @@ class ProductOverviewScreen extends StatefulWidget {
 
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   var _showFavourite = false;
+  bool _loadingState = true;
+  final keyRefresh = GlobalKey<RefreshIndicatorState>();
+
+  Future init() async {
+    keyRefresh.currentState?.show();
+    setState(() {
+      _loadingState = true;
+    });
+    var state =
+        await Provider.of<ProductProvider>(context, listen: false).getProduct();
+    if (state == true) {
+      setState(() {
+        _loadingState = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,9 +73,14 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           )
         ],
       ),
-      body: ProductGrid(
-        showFavourite: _showFavourite,
-      ),
+      body: _loadingState
+          ? const Center(child: LoadingState())
+          : RefreshWidget(
+              keyRefresh: keyRefresh,
+              onRefresh: init,
+              child: ProductGrid(
+                showFavourite: _showFavourite,
+              )),
       drawer: const AppDrawer(),
     );
   }

@@ -1,48 +1,18 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+
 import 'package:shop_app/providers/product.dart';
-import 'package:shop_app/util/helper.dart';
+import 'package:shop_app/util/constants.dart';
+import 'package:http/http.dart' as http;
 
 class ProductProvider with ChangeNotifier {
-  final List<Product> _items = [
-    Product(
-        id: "1",
-        description: 'Cricket Stud shoes for men',
-        image:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-EOvLlbEMAjT5tJWWrgHABJDzepebWK9zqQ&usqp=CAU",
-        price: 540,
-        title: "Cricket Stud Shoes",
-        isFavourite: false),
-    Product(
-        id: "2",
-        description: 'Cricket Stud shoes for men',
-        image:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFS4BrgAhpXlCnfgSnQ78rxZxhbA9fc6iY3g&usqp=CAU",
-        price: 540,
-        title: "Cricket Stud Shoes",
-        isFavourite: true),
-    Product(
-        id: "3",
-        description: 'Cricket Stud shoes for men',
-        image:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs6Q1ZoAm-aw2ehInLqKbMkuEud4tpo2qG7g&usqp=CAU",
-        price: 540,
-        title: "Cricket Stud Shoes",
-        isFavourite: true),
-    Product(
-        id: "4",
-        description: 'Cricket Stud shoes for men',
-        image:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjunGdaLPiB0xd-Lhw9frcbgeEZgLLdYkERg&usqp=CAU",
-        price: 540,
-        title: "Cricket Stud Shoes",
-        isFavourite: false)
-  ];
+  List<Product> _items = [];
 
   List<Product> get getItems {
     return [..._items];
   }
 
-  List<Product> get favouuriteItems {
+  List<Product> get favouriteItems {
     return _items.where((element) => element.isFavourite).toList();
   }
 
@@ -50,41 +20,125 @@ class ProductProvider with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  void addProduct(Product product, BuildContext context) {
-    final newProduct = Product(
-        image: product.image,
-        description: product.description,
-        id: DateTime.now().toString(),
-        price: product.price,
-        title: product.title);
-    _items.add(newProduct);
-    showToast(context, "Product Added");
-
-    notifyListeners();
+  Future<bool> getProduct() async {
+    try {
+      var url = Uri(
+        scheme: 'https',
+        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        path: '/product.json',
+      );
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var products = json.decode(response.body) as Map<String, dynamic>;
+        List<Product> responseData = [];
+        products.forEach((key, value) {
+          responseData.add(Product(
+              image: value["image"],
+              description: value["description"],
+              id: key,
+              price: value["price"],
+              title: value["title"]));
+        });
+        _items = responseData;
+        notifyListeners();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 
-  void updateProducts(Product newProduct, BuildContext context) {
+  Future<bool> addProduct(Product product, BuildContext context) async {
+    var url = Uri(
+      scheme: 'https',
+      host: FIRE_BASE_REALTIME_DATABASE_URI,
+      path: '/product.json',
+    );
+
+    try {
+      var response = await http.post(url,
+          body: json.encode({
+            "title": product.title,
+            "description": product.description,
+            "price": product.price,
+            "image": product.image,
+            " isFavourite": product.isFavourite,
+          }));
+      if (response.statusCode == 200) {
+        final newProduct = Product(
+            image: product.image,
+            description: product.description,
+            id: json.decode(response.body)["name"].toString(),
+            price: product.price,
+            title: product.title);
+        _items.add(newProduct);
+        notifyListeners();
+
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> updateProducts(Product newProduct) async {
     final indexNumber = _items.indexWhere((prod) => prod.id == newProduct.id);
     if (indexNumber >= 0) {
-      _items[indexNumber] = newProduct;
-      showToast(context, "Product Updated");
-      notifyListeners();
+      var url = Uri(
+        scheme: 'https',
+        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        path: '/product/${newProduct.id}.json',
+      );
+      try {
+        var response = await http.patch(url,
+            body: json.encode({
+              "title": newProduct.title,
+              "description": newProduct.description,
+              "price": newProduct.price,
+              "image": newProduct.image,
+              " isFavourite": newProduct.isFavourite,
+            }));
+        if (response.statusCode == 200) {
+          _items[indexNumber] = newProduct;
+          notifyListeners();
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        return false;
+      }
     } else {
-      showToast(context, "Product Not Found",
-          iconColor: Colors.redAccent, icon: Icons.cancel_rounded);
+      return false;
     }
   }
 
-  void deleteProduct(String id, BuildContext context) {
+  Future<bool> deleteProduct(String id) async {
     final indexNumber = _items.indexWhere((prod) => prod.id == id);
     if (indexNumber >= 0) {
-      _items.removeAt(indexNumber);
-      showToast(context, "Product Deleted");
-      notifyListeners();
+      var url = Uri(
+        scheme: 'https',
+        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        path: '/product/$id.json',
+      );
+      try {
+        var response = await http.delete(url);
+        if (response.statusCode == 200) {
+          _items.removeAt(indexNumber);
+          notifyListeners();
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        return false;
+      }
     } else {
-      showToast(context, "Product Not Found",
-          iconColor: Colors.redAccent, icon: Icons.cancel_rounded);
+      return false;
     }
-    Navigator.of(context).pop(true);
   }
 }
