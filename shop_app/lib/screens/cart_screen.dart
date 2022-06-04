@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/order.dart';
 import 'package:shop_app/util/helper.dart';
+import 'package:shop_app/widgets/loading_state.dart';
 import '../providers/cart.dart' show Cart;
 import '../widgets/cart_item.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
 
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final totalAmount = Provider.of<Cart>(context).totalAmount;
@@ -15,6 +21,7 @@ class CartScreen extends StatelessWidget {
     final cart = Provider.of<Cart>(context).getCartItems;
     final clearCart = Provider.of<Cart>(context).clearCart;
     final addOrder = Provider.of<Order>(context).addOrder;
+    var _loadingState = false;
     return Scaffold(
         appBar: AppBar(title: const Text("My Cart")),
         body: Container(
@@ -30,30 +37,44 @@ class CartScreen extends StatelessWidget {
                         const Text("Total:", style: TextStyle(fontSize: 20)),
                         const Spacer(),
                         Chip(
-                          label: Text("Rs $totalAmount"),
+                          label: Text("Rs ${totalAmount.toStringAsFixed(1)}"),
                           backgroundColor:
                               Theme.of(context).colorScheme.secondary,
                         ),
                         TextButton(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context)
-                                  .hideCurrentSnackBar();
-                              if (cart.isEmpty || totalAmount < 0.0) {
-                                showToast(context,
-                                    "No Item on the Cart to Place Order",
-                                    icon: Icons.cancel_rounded,
-                                    iconColor: Colors.redAccent);
-                              } else {
-                                addOrder(cart.values.toList(), totalAmount);
-                                clearCart();
-                                showToast(context,
-                                    "Check Order Screen to Place the order");
-                              }
-                            },
-                            child: const Text(
-                              "Order Now",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
+                            onPressed: totalAmount <= 0.0 || _loadingState
+                                ? null
+                                : () async {
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
+                                    setState(() {
+                                      _loadingState = true;
+                                    });
+                                    try {
+                                      await addOrder(
+                                          cart.values.toList(), totalAmount);
+                                      setState(() {
+                                        _loadingState = false;
+                                      });
+                                      showToast(context,
+                                          "Check Order Screen to Place the order");
+                                      clearCart();
+                                    } catch (e) {
+                                      setState(() {
+                                        _loadingState = false;
+                                      });
+                                      showToast(context, "Something Went wrong",
+                                          icon: Icons.cancel_rounded,
+                                          iconColor: Colors.redAccent);
+                                    }
+                                  },
+                            child: _loadingState
+                                ? const LoadingState()
+                                : const Text(
+                                    "Order Now",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  )),
                       ],
                     ),
                   ),

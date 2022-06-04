@@ -31,13 +31,17 @@ class ProductProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         var products = json.decode(response.body) as Map<String, dynamic>;
         List<Product> responseData = [];
+        if (products == null) {
+          return false;
+        }
         products.forEach((key, value) {
           responseData.add(Product(
               image: value["image"],
               description: value["description"],
               id: key,
               price: value["price"],
-              title: value["title"]));
+              title: value["title"],
+              isFavourite: value["isFavourite"]));
         });
         _items = responseData;
         notifyListeners();
@@ -50,7 +54,7 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> addProduct(Product product, BuildContext context) async {
+  Future<bool> addProduct(Product product) async {
     var url = Uri(
       scheme: 'https',
       host: FIRE_BASE_REALTIME_DATABASE_URI,

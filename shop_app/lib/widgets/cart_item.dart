@@ -87,7 +87,7 @@ class CartItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Text("$quantity X"),
-                Text("Total: \$${(price * quantity)}")
+                Text("Total: \$${(price * quantity).toStringAsFixed(2)}")
               ],
             ),
           ),

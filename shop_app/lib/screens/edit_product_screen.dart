@@ -80,7 +80,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
       setState(() {
         _loadingState = true;
       });
-      var state = await _productProvider.addProduct(_product, context);
+      var state = await _productProvider.addProduct(_product);
       if (state) {
         showToast(
           context,
