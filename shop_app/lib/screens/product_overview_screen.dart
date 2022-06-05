@@ -26,8 +26,8 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
     setState(() {
       _loadingState = true;
     });
-    var state =
-        await Provider.of<ProductProvider>(context, listen: false).getProduct();
+    var state = await Provider.of<ProductProvider>(context, listen: false)
+        .getProduct(false);
     if (state == true) {
       setState(() {
         _loadingState = false;

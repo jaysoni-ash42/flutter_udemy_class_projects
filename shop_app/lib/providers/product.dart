@@ -11,16 +11,15 @@ class Product with ChangeNotifier {
   final String image;
   bool isFavourite;
 
-  void toggleFavourite() async {
+  void toggleFavourite(String token, String userId) async {
     final oldStatus = isFavourite;
     var url = Uri(
-      scheme: 'https',
-      host: FIRE_BASE_REALTIME_DATABASE_URI,
-      path: '/product/$id.json',
-    );
+        scheme: 'https',
+        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        path: '/userFavourite/$userId/$id.json',
+        queryParameters: {"auth": token});
     try {
-      var response = await http.patch(url,
-          body: json.encode({"isFavourite": !isFavourite}));
+      var response = await http.put(url, body: json.encode(!isFavourite));
       if (response.statusCode >= 400) {
         isFavourite = oldStatus;
         notifyListeners();

@@ -15,26 +15,15 @@ class UserProductScreen extends StatefulWidget {
 }
 
 class _UserProductScreenState extends State<UserProductScreen> {
-  var _loadingState = false;
   final keyRefresh = GlobalKey<RefreshIndicatorState>();
 
   Future _refetchData(BuildContext context) async {
     keyRefresh.currentState?.show();
-    setState(() {
-      _loadingState = true;
-    });
-    var state =
-        await Provider.of<ProductProvider>(context, listen: false).getProduct();
-    if (state == true) {
-      setState(() {
-        _loadingState = false;
-      });
-    }
+    await Provider.of<ProductProvider>(context, listen: false).getProduct(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productData = Provider.of<ProductProvider>(context).getItems;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your Products"),
@@ -47,24 +36,31 @@ class _UserProductScreenState extends State<UserProductScreen> {
         ],
       ),
       drawer: const AppDrawer(),
-      body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: _loadingState
-              ? const Center(child: LoadingState())
-              : RefreshWidget(
-                  keyRefresh: keyRefresh,
-                  onRefresh: () => _refetchData(context),
-                  child: ListView.builder(
-                      itemCount: productData.length,
-                      itemBuilder: (ctx, i) => Column(children: [
-                            UserProductItem(
-                              id: productData[i].id,
-                              title: productData[i].title,
-                              description: productData[i].description,
-                              imageUrl: productData[i].image,
-                            ),
-                            const Divider(),
-                          ])))),
+      body: FutureBuilder(
+          future: _refetchData(context),
+          builder: (ctx, snapshot) => Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: snapshot.connectionState == ConnectionState.waiting
+                  ? const Center(child: LoadingState())
+                  : RefreshWidget(
+                      keyRefresh: keyRefresh,
+                      onRefresh: () => _refetchData(context),
+                      child: Consumer<ProductProvider>(
+                          builder: (ctx, productProvider, child) =>
+                              ListView.builder(
+                                  itemCount: productProvider.getItems.length,
+                                  itemBuilder: (ctx, i) => Column(children: [
+                                        UserProductItem(
+                                          id: productProvider.getItems[i].id,
+                                          title:
+                                              productProvider.getItems[i].title,
+                                          description: productProvider
+                                              .getItems[i].description,
+                                          imageUrl:
+                                              productProvider.getItems[i].image,
+                                        ),
+                                        const Divider(),
+                                      ])))))),
     );
   }
 }

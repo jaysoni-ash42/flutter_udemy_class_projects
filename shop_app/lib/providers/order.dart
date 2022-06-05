@@ -19,6 +19,10 @@ class OrderItem {
 
 class Order with ChangeNotifier {
   List<OrderItem> _orderItem = [];
+  String _token = "";
+  String _userId = "";
+
+  Order(this._token, this._orderItem, this._userId);
 
   List<OrderItem> get orderItems {
     return [..._orderItem];
@@ -27,10 +31,10 @@ class Order with ChangeNotifier {
   Future<void> addOrder(List<CartItem> cartItem, double amount) async {
     final date = DateTime.now();
     var url = Uri(
-      scheme: 'https',
-      host: FIRE_BASE_REALTIME_DATABASE_URI,
-      path: '/orders.json',
-    );
+        scheme: 'https',
+        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        path: '/orders/$_userId.json',
+        queryParameters: {"auth": _token});
 
     try {
       var response = await http.post(url,
@@ -66,10 +70,10 @@ class Order with ChangeNotifier {
   Future<void> getOrder() async {
     List<OrderItem> loadedProducts = [];
     var url = Uri(
-      scheme: 'https',
-      host: FIRE_BASE_REALTIME_DATABASE_URI,
-      path: '/orders.json',
-    );
+        scheme: 'https',
+        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        path: '/orders/$_userId.json',
+        queryParameters: {"auth": _token});
     try {
       var response = await http.get(
         url,
