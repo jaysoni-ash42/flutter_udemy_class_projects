@@ -41,15 +41,18 @@ class CartItem extends StatelessWidget {
                           },
                           child: const Text("No")),
                       ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            try {
+                              await deleteItem(productId);
+                            } catch (e) {
+                              print(e);
+                            }
+                            // ignore: use_build_context_synchronously
                             Navigator.of(context).pop(true);
                           },
                           child: const Text("Yes"))
                     ],
                   ));
-        },
-        onDismissed: (_) {
-          deleteItem(productId);
         },
         background: Container(
           margin: const EdgeInsets.all(10.0),

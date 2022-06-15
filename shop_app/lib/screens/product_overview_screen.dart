@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products_providers.dart';
+import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/util/constants.dart';
 import 'package:shop_app/util/enum.dart';
 import 'package:shop_app/widgets/badge.dart';
@@ -28,7 +29,9 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
     });
     var state = await Provider.of<ProductProvider>(context, listen: false)
         .getProduct(false);
-    if (state == true) {
+    var cartState =
+        await Provider.of<Cart>(context, listen: false).getCartItem();
+    if (state == true && cartState == true) {
       setState(() {
         _loadingState = false;
       });

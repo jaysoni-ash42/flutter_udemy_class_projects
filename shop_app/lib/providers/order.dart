@@ -43,7 +43,7 @@ class Order with ChangeNotifier {
             "amount": amount,
             "item": cartItem
                 .map((element) => {
-                      "id": element.id,
+                      "id": element.userId,
                       "quantity": element.quantity,
                       "title": element.title,
                       "description": element.description,
@@ -92,7 +92,7 @@ class Order with ChangeNotifier {
                   item: (value["item"] as List<dynamic>)
                       .map((element) => CartItem(
                           description: element["description"],
-                          id: element["id"],
+                          userId: element["id"],
                           imageUrl: element["imageUrl"],
                           price: element["price"],
                           quantity: element["quantity"],

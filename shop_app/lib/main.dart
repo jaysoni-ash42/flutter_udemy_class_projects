@@ -27,7 +27,10 @@ void main() {
                     : previousProduct.getItems,
                 auth.userId,
               )),
-      ChangeNotifierProvider(create: (_) => Cart()),
+      ChangeNotifierProxyProvider<Auth, Cart>(
+          create: (_) => Cart("", {}, ""),
+          update: (ctx, auth, cartPrevious) =>
+              Cart(auth.token, cartPrevious!.getCartItems, auth.userId)),
       ChangeNotifierProxyProvider<Auth, Order>(
           create: (_) => Order("", [], ""),
           update: (ctx, auth, previousOrder) => Order(

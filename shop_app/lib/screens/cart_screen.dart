@@ -53,12 +53,12 @@ class _CartScreenState extends State<CartScreen> {
                                     try {
                                       await addOrder(
                                           cart.values.toList(), totalAmount);
+                                      await clearCart();
                                       setState(() {
                                         _loadingState = false;
                                       });
                                       showToast(context,
                                           "Check Order Screen to Place the order");
-                                      clearCart();
                                     } catch (e) {
                                       setState(() {
                                         _loadingState = false;
@@ -86,7 +86,7 @@ class _CartScreenState extends State<CartScreen> {
                     child: ListView.builder(
                         itemCount: totalItems,
                         itemBuilder: (ctx, i) => CartItem(
-                              id: cart.values.toList()[i].id,
+                              id: cart.values.toList()[i].userId,
                               description: cart.values.toList()[i].description,
                               imageUrl: cart.values.toList()[i].imageUrl,
                               price: cart.values.toList()[i].price,

@@ -35,16 +35,23 @@ class ProductItem extends StatelessWidget {
                         color: Theme.of(context).colorScheme.secondary,
                       )),
               trailing: IconButton(
-                  onPressed: () {
-                    cartProvider.addItem(
-                      product.id,
-                      product.price,
-                      product.image,
-                      product.description,
-                      product.title,
-                    );
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    showToast(context, "${product.title} added to the Cart");
+                  onPressed: () async {
+                    try {
+                      await cartProvider.addItem(
+                        product.id,
+                        product.price,
+                        product.image,
+                        product.description,
+                        product.title,
+                      );
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      showToast(context, "${product.title} added to the Cart");
+                    } catch (e) {
+                      showToast(
+                          context, "${product.title} not added to the Cart",
+                          icon: Icons.cancel_rounded,
+                          iconColor: Colors.redAccent);
+                    }
                   },
                   icon: const Icon(Icons.shopping_cart),
                   color: Theme.of(context).colorScheme.secondary),
