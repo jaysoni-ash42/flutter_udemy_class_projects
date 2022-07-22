@@ -3,8 +3,7 @@ const CART_ITEMS_PAGE_ROUTE_NAME = "cart_items_page";
 const ORDER_PAGE_ROUTE_NAME = "order_page";
 const USER_PRODUCT_PAGE_ROUTE_NAME = "user_product_page";
 const EDIT_PRODUCT_PAGE_ROUTE_NAME = "edit_product_page";
-const FIRE_BASE_REALTIME_DATABASE_URI =
-    "flutterdemo-6f63c-default-rtdb.asia-southeast1.firebasedatabase.app";
+const FIRE_BASE_REALTIME_DATABASE_URI = "FIRE_BASE_REALTIME_DATABASE_URI";
 const AUTH_SCREEN_PAGE_ROUTE_NAME = "auth_screen_page";
-const FIRE_BASE_AUTH_API_URL = "identitytoolkit.googleapis.com";
-const FIRE_BASE_WEB_API_KEY = "AIzaSyBMh5Dt8Ri-I6GFXBSXO-XziJuxgy4e2Go";
+const FIRE_BASE_AUTH_API_URL = "FIRE_BASE_AUTH_API_URL";
+const FIRE_BASE_WEB_API_KEY = "FIRE_BASE_WEB_API_KEY";

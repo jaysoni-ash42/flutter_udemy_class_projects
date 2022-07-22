@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:http/http.dart' as http;
 import '../util/constants.dart';
@@ -32,7 +33,7 @@ class Order with ChangeNotifier {
     final date = DateTime.now();
     var url = Uri(
         scheme: 'https',
-        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
         path: '/orders/$_userId.json',
         queryParameters: {"auth": _token});
 
@@ -71,7 +72,7 @@ class Order with ChangeNotifier {
     List<OrderItem> loadedProducts = [];
     var url = Uri(
         scheme: 'https',
-        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
         path: '/orders/$_userId.json',
         queryParameters: {"auth": _token});
     try {

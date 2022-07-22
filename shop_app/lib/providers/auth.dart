@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_app/models/custom_exception.dart';
 import 'dart:convert';
@@ -31,9 +32,9 @@ class Auth with ChangeNotifier {
       String email, String password, String newUrl) async {
     var url = Uri(
         scheme: 'https',
-        host: FIRE_BASE_AUTH_API_URL,
+        host: dotenv.env[FIRE_BASE_AUTH_API_URL],
         path: '/v1/accounts:$newUrl',
-        queryParameters: {"key": FIRE_BASE_WEB_API_KEY});
+        queryParameters: {"key": dotenv.env[FIRE_BASE_WEB_API_KEY]});
     try {
       var response = await http.post(url,
           body: json.encode({

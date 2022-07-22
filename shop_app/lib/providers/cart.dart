@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../util/constants.dart';
 import 'dart:convert';
@@ -47,7 +48,7 @@ class Cart with ChangeNotifier {
   Future<String> _getCartItemId(String id) async {
     var getUrl = Uri(
         scheme: 'https',
-        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
         path: '/cartitem/$_userId.json',
         queryParameters: {
           "auth": _token,
@@ -67,7 +68,7 @@ class Cart with ChangeNotifier {
       if (cartItemId != "" && _cartItem.containsKey(cartItemId)) {
         var url = Uri(
             scheme: 'https',
-            host: FIRE_BASE_REALTIME_DATABASE_URI,
+            host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
             path: '/cartitem/$_userId/$cartItemId.json',
             queryParameters: {
               "auth": _token,
@@ -97,7 +98,7 @@ class Cart with ChangeNotifier {
       } else {
         var url = Uri(
             scheme: 'https',
-            host: FIRE_BASE_REALTIME_DATABASE_URI,
+            host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
             path: '/cartitem/$_userId.json',
             queryParameters: {"auth": _token});
         var response = await http.post(url,
@@ -133,7 +134,7 @@ class Cart with ChangeNotifier {
     try {
       var url = Uri(
           scheme: 'https',
-          host: FIRE_BASE_REALTIME_DATABASE_URI,
+          host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
           path: '/cartitem/$_userId.json',
           queryParameters: {"auth": _token});
       var response = await http.get(url);
@@ -161,7 +162,7 @@ class Cart with ChangeNotifier {
     try {
       var url = Uri(
           scheme: 'https',
-          host: FIRE_BASE_REALTIME_DATABASE_URI,
+          host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
           path: '/cartitem/$_userId/$cartItemId.json',
           queryParameters: {"auth": _token});
       var response = await http.delete(url);
@@ -180,7 +181,7 @@ class Cart with ChangeNotifier {
     try {
       var url = Uri(
           scheme: 'https',
-          host: FIRE_BASE_REALTIME_DATABASE_URI,
+          host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
           path: '/cartitem/$_userId.json',
           queryParameters: {"auth": _token});
       var response = await http.delete(url);

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:shop_app/providers/product.dart';
 import 'package:shop_app/util/constants.dart';
@@ -27,7 +28,7 @@ class ProductProvider with ChangeNotifier {
   Future<bool> getProduct(bool fetchOwnProduct) async {
     var url = Uri(
         scheme: 'https',
-        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
         path: '/product.json',
         queryParameters: fetchOwnProduct
             ? {
@@ -38,7 +39,7 @@ class ProductProvider with ChangeNotifier {
             : {"auth": _token});
     var favouriteUrl = Uri(
         scheme: 'https',
-        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
         path: '/userFavourite/$_userId.json',
         queryParameters: {"auth": _token});
     try {
@@ -75,7 +76,7 @@ class ProductProvider with ChangeNotifier {
   Future<bool> addProduct(Product product) async {
     var url = Uri(
         scheme: 'https',
-        host: FIRE_BASE_REALTIME_DATABASE_URI,
+        host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
         path: '/product.json',
         queryParameters: {"auth": _token});
 
@@ -112,7 +113,7 @@ class ProductProvider with ChangeNotifier {
     if (indexNumber >= 0) {
       var url = Uri(
           scheme: 'https',
-          host: FIRE_BASE_REALTIME_DATABASE_URI,
+          host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
           path: '/product/${newProduct.id}.json',
           queryParameters: {"auth": _token});
       try {
@@ -143,7 +144,7 @@ class ProductProvider with ChangeNotifier {
     if (indexNumber >= 0) {
       var url = Uri(
           scheme: 'https',
-          host: FIRE_BASE_REALTIME_DATABASE_URI,
+          host: dotenv.env[FIRE_BASE_REALTIME_DATABASE_URI],
           path: '/product/$id.json',
           queryParameters: {"auth": _token});
       try {
